@@ -193,6 +193,7 @@ private fun CarTable(
                         modifier = Modifier
                             .defaultMinSize(minHeight = maxHeight.value)
                             .weight(fMap[key]?: 1f)
+                            .background(color = Color.Gray.copy(0.3f))
                             .border(width = 1.dp, Color.Gray)
                             .heightIn(max = 64.dp)
                             .onGloballyPositioned { coordinates ->

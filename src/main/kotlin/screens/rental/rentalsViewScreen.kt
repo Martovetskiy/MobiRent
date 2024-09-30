@@ -181,6 +181,7 @@ private fun CustomersTable(
                         modifier = Modifier
                             .defaultMinSize(minHeight = maxHeight.value)
                             .weight(fMap[key]?: 1f)
+                            .background(color = Color.Gray.copy(0.3f))
                             .border(width = 1.dp, Color.Gray)
                             .heightIn(max = 64.dp)
                             .onGloballyPositioned { coordinates ->
@@ -401,8 +402,8 @@ private fun Filter(
                                 email.value,
                                 make.value,
                                 model.value,
-                                DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.parse(startDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME)),
-                                DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.parse(endDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME)),
+                                if (startDate.value.isNotEmpty()) DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.parse(startDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME)) else "",
+                                if (endDate.value.isNotEmpty()) DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.parse(endDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME)) else "",
                                 totalPrice.value,
                                 sortBy.value,
                                 sortDirection.value
