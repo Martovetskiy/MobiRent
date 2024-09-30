@@ -27,6 +27,11 @@ class CustomersViewScreenComponent (
     private val _isBanned: MutableState<Boolean?> = mutableStateOf(null)
     private val _sortBy: MutableState<String> = mutableStateOf("firstName")
     private val _sortDirection: MutableState<String> = mutableStateOf("ASC")
+    private val _showPopup: MutableState<Boolean> = mutableStateOf(false)
+    private val _textPopup: MutableState<String> = mutableStateOf("")
+
+    val showPopup = _showPopup
+    val textPopup = _textPopup
 
     val listCustomers = _listCustomers
     val firstName = _firstName
@@ -58,16 +63,22 @@ class CustomersViewScreenComponent (
     @OptIn(DelicateCoroutinesApi::class)
     fun getData(){
         GlobalScope.launch {
-            _listCustomers.value = getAllCustomer(
-                firstName = _firstName.value,
-                lastName = _lastName.value,
-                email = _email.value,
-                phoneNumber = _phoneNumber.value,
-                driverLicense = _driverLicense.value,
-                isBanned = _isBanned.value,
-                sortBy = _sortBy.value,
-                sortDirection = _sortDirection.value
-            )
+            try {
+                _listCustomers.value = getAllCustomer(
+                    firstName = _firstName.value,
+                    lastName = _lastName.value,
+                    email = _email.value,
+                    phoneNumber = _phoneNumber.value,
+                    driverLicense = _driverLicense.value,
+                    isBanned = _isBanned.value,
+                    sortBy = _sortBy.value,
+                    sortDirection = _sortDirection.value
+                )
+            }
+            catch (e: Exception){
+                _textPopup.value = e.message.toString()
+                _showPopup.value = true
+            }
         }
     }
 }

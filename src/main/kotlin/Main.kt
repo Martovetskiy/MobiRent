@@ -3,21 +3,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.window.WindowDraggableArea
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Lock
 import androidx.compose.material.icons.sharp.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.*
+import api.isServerConnected
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -25,13 +24,18 @@ import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import icons.*
+import kotlinx.coroutines.delay
 import navigation.DecomposeNav
+import screens.car.carAddScreen
+import screens.car.carCardScreen
 import screens.car.carsViewScreen
 import screens.customer.customerAddScreen
 import screens.customer.customerCardScreen
 import screens.customer.customersViewScreen
 import screens.homeScreen
 import screens.payment.paymentsViewScreen
+import screens.rental.rentalAddScreen
+import screens.rental.rentalCardScreen
 import screens.rental.rentalsViewScreen
 import screens.review.reviewsViewScreen
 import widgets.CustomTab
@@ -46,6 +50,13 @@ fun mainMenu(
 )
 {
     val childStack by root.childStack.subscribeAsState()
+    var isConnected by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            isConnected = isServerConnected("http://localhost:5022/")
+            delay(2000) // Ждем 10 секунд перед следующей проверкой
+        }
+    }
     MaterialTheme {
         Box(
             modifier = Modifier
@@ -58,6 +69,7 @@ fun mainMenu(
                     .width(80.dp)
                     .fillMaxHeight()
                     .background(color = backgroundColor)
+                    .padding(bottom = 28.dp)
             )
             {
                 Spacer(modifier = Modifier.height(40.dp))
@@ -141,15 +153,54 @@ fun mainMenu(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(start = 80.dp, top = 40.dp)
+                    .padding(start = 80.dp, top = 40.dp, bottom = 28.dp)
                     .fillMaxSize()
             )
             {
                 content()
             }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+
+            )
+            {
+                ConnectionStatusBar(isConnected)
+            }
         }
     }
 }
+
+// Composable функция для отображения состояния соединения
+@Composable
+fun ConnectionStatusBar(isConnected: Boolean) {
+    val color = if (isConnected) {
+        Color(0xFF039660)// Подключен
+    } else {
+        Color.Red // Отключен
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color)
+            .height(28.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+
+    ) {
+        // Текст состояния подключения
+        Text(
+            text = if (isConnected) "Сервер доступен" else "Сервер недоступен",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(0.dp)
+        )
+    }
+}
+
 
 @Composable
 @Preview
@@ -170,9 +221,13 @@ fun App(root: DecomposeNav) {
 
             //Car
             is DecomposeNav.Child.CarViewScreen -> carsViewScreen(instance.component)
+            is DecomposeNav.Child.CarCardScreen -> carCardScreen(instance.component)
+            is DecomposeNav.Child.CarAddScreen -> carAddScreen(instance.component)
 
             //Rental
             is DecomposeNav.Child.RentalsViewScreen -> rentalsViewScreen(instance.component)
+            is DecomposeNav.Child.RentalCardScreen -> rentalCardScreen(instance.component)
+            is DecomposeNav.Child.RentalAddScreen -> rentalAddScreen(instance.component)
 
             //Payment
             is DecomposeNav.Child.PaymentsViewScreen -> paymentsViewScreen(instance.component)
@@ -242,7 +297,7 @@ fun WindowScope.AppBar(
             {
                 IconButton(onClick = onMinimize) {
                     Icon(
-                        modifier = Modifier.size(10.dp),
+                        modifier = Modifier.size(15.dp),
                         imageVector = Minimize,
                         contentDescription = null,
                         tint = Color.White
@@ -251,14 +306,14 @@ fun WindowScope.AppBar(
                 val isFloating = state.placement == WindowPlacement.Floating
                 IconButton(onClick = onMaximize) {
                     Icon(
-                        modifier = Modifier.size(10.dp),
+                        modifier = Modifier.size(15.dp),
                         imageVector =  if (isFloating) Expand else Compress ,
                         contentDescription = null,
                         tint = Color.White)
                 }
                 IconButton(onClick = onClose) {
                     Icon(
-                        modifier = Modifier.size(10.dp),
+                        modifier = Modifier.size(15.dp),
                         imageVector = Close,
                         contentDescription = null,
                         tint = Color.White

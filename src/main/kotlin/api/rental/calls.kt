@@ -1,4 +1,4 @@
-package api.customer
+package api.rental
 
 import api.GeneralResponse.FailResponse
 import api.HOST
@@ -9,33 +9,34 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getAllCustomer(
-    customerId: String? = null,
-    firstName: String? = null,
-    lastName: String? = null,
+suspend fun getAllRental(
+    rentalId: String? = null,
     email: String? = null,
-    phoneNumber: String? = null,
-    driverLicense: String? = null,
-    isBanned: Boolean? = null,
+    make: String? = null,
+    model: String? = null,
+    startDate: String? = null,
+    endDate: String? = null,
+    totalPrice: String? = null,
     createAt: String? = null,
-    sortBy: String = "firstName",
+    sortBy: String = "Rentals.rentalId",
     sortDirection: String = "ASC"  // "asc" or "desc"
-): List<CustomerResponse> {
+): List<RentalResponse> {
     val response: HttpResponse = client.request {
         url {
             method = HttpMethod.Get
             host = HOST // Замените на ваш хост
             port = PORT // Убедитесь, что порту соответствует вашему серверу
-            path("/api/Customers/GetCustomers") // Укажите только путь к API
+            path("/api/Rentals/GetRentals") // Укажите только путь к API
 
             // Добавьте параметры запроса
-            if (customerId != null) parameters["customerId"] = customerId
-            if (firstName != null) parameters["firstName"] = firstName
-            if (lastName != null) parameters["lastName"] = lastName
-            if (email != null) parameters["email"] = email
-            if (phoneNumber != null) parameters["phoneNumber"] = phoneNumber
-            if (driverLicense != null) parameters["driverLicense"] = driverLicense
-            if (isBanned != null) parameters["isBanned"] = isBanned.toString()
+            if (rentalId != null) parameters["rentalId"] = rentalId
+            if(email != null) parameters["email"] = email
+            if(make != null) parameters["make"] = make
+            if(model != null) parameters["model"] = model
+            if(startDate != null) parameters["startDate"] = startDate
+            if(endDate != null) parameters["endDate"] = endDate
+            if(totalPrice != null) parameters["totalPrice"] = totalPrice
+
             if (createAt != null) parameters["createAt"] = createAt
             parameters["sortBy"] = sortBy
             parameters["sortDirection"] = sortDirection
@@ -44,7 +45,7 @@ suspend fun getAllCustomer(
     }
     if (response.status.value == 200)
     {
-        val result: List<CustomerResponse> = response.body()
+        val result: List<RentalResponse> = response.body()
         return result
     }
     else
@@ -56,22 +57,22 @@ suspend fun getAllCustomer(
     }
 }
 
-suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
+suspend fun postRental(rental: RentalRequest): RentalResponse {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Post
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/InsertCustomer")
+            path("api/Rentals/InsertRental")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(customerRequest)
+        setBody(rental)
     }
 
     if (response.status.value in 200..299) {
-        val result: CustomerResponse = response.body()
+        val result: RentalResponse = response.body()
         return result
     }
     else {
@@ -80,22 +81,22 @@ suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
     }
 }
 
-suspend fun putCustomer(customer: CustomerResponse): CustomerResponse{
+suspend fun putRental(rental: RentalResponse): RentalResponse{
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Put
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/UpdateCustomer/${customer.customerId}")
+            path("api/Rentals/UpdateRental/${rental.rentalId}")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(customer)
+        setBody(rental)
     }
 
     if (response.status.value in 200..299) {
-        val result: CustomerResponse = response.body()
+        val result: RentalResponse = response.body()
         return result
     }
     else {
@@ -104,14 +105,14 @@ suspend fun putCustomer(customer: CustomerResponse): CustomerResponse{
     }
 }
 
-suspend fun deleteCustomer(id: Long): CustomerResponse? {
+suspend fun deleteRental(id: Long): RentalResponse? {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Delete
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/DeleteCustomer/${id}")
+            path("api/Rentals/DeleteRental/${id}")
 
         }
         contentType(ContentType.Application.Json)
@@ -123,7 +124,7 @@ suspend fun deleteCustomer(id: Long): CustomerResponse? {
             return result
         }
         else{
-            val result: CustomerResponse = response.body()
+            val result: RentalResponse = response.body()
             return result
         }
     }

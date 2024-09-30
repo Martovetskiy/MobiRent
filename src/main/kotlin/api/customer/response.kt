@@ -10,18 +10,18 @@ data class CustomerResponse (
     @SerialName("customerId")
     val customerId: Long,
     @SerialName("firstName")
-    var firstName: String,
+    var firstName: String?,
     @SerialName("lastName")
-    var lastName: String,
+    var lastName: String?,
     @SerialName("email")
-    var email: String,
+    var email: String?,
     @SerialName("phoneNumber")
-    var phoneNumber: String,
+    var phoneNumber: String?,
     @SerialName("driverLicense")
-    var driverLicense: String,
+    var driverLicense: String?,
     @SerialName("isBanned")
-    val isBanned: Boolean = false,
+    val isBanned: Boolean? = false,
     @SerialName("createAt")
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val createAt: OffsetDateTime
+    val createAt: OffsetDateTime?
 )

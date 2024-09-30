@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.ArrowBack
 import androidx.compose.material.icons.sharp.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -169,6 +167,18 @@ fun customerAddScreen(component: CustomerAddScreenComponent)
                     )
                 )
             }
+        }
+        IconButton(
+            onClick = {
+                component.goBack()
+            }
+        )
+        {
+            Icon(
+                imageVector = Icons.AutoMirrored.Sharp.ArrowBack,
+                contentDescription = "Back to",
+                tint = Color.White
+            )
         }
         PopupNotification(
             showPopup = component.showPopup,

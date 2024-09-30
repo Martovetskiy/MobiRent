@@ -31,7 +31,6 @@ fun CustomTab(
         modifier = modifier
             .fillMaxSize()
             .clickable (role = Role.Tab) {
-                println(selected)
                 onClick() },
         contentAlignment = Alignment.Center
     )

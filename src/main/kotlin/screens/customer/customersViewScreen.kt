@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Add
+import androidx.compose.material.icons.sharp.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,9 @@ import api.customer.CustomerResponse
 import components.customer.CustomersViewScreenComponent
 import icons.FilterSvgrepoCom
 import widgets.BottomSheet
+import widgets.PopupNotification
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Composable
 fun customersViewScreen(component: CustomersViewScreenComponent)
@@ -60,24 +64,43 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "dbo.Customers",
+                    text = "dbo.Cars",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
                         color = Color.White
                     ),
                 )
-                Row(
-                    modifier = Modifier.clickable { component.goToAdd() },
+                Row (
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Text(
-                        color = Color.White,
-                        text = "Добавить",
-                        style = TextStyle(fontWeight = FontWeight.Medium),
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Icon(imageVector = Icons.Sharp.Add, contentDescription = "Add", tint = Color.White)
+                    IconButton(
+                        onClick = {
+                            component.getData()
+                        }
+                    ){
+                        Icon(
+                            imageVector = Icons.Sharp.Refresh,
+                            contentDescription = "Refresh",
+                            tint = Color.White
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.clickable { component.goToAdd() },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+
+
+                        Text(
+                            color = Color.White,
+                            text = "Добавить",
+                            style = TextStyle(fontWeight = FontWeight.Medium),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        Icon(imageVector = Icons.Sharp.Add, contentDescription = "Add", tint = Color.White)
+                    }
                 }
             }
             CustomersTable(
@@ -85,7 +108,6 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
                 associativeMapRu,
                 fMap,
                 onClick = {
-                    println(it)
                     component.goToCard(it)
                 }
             )
@@ -135,6 +157,11 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
             }
         )
 
+        PopupNotification(
+            showPopup = component.showPopup,
+            text = component.textPopup.value
+        )
+
     }
 }
 
@@ -159,7 +186,7 @@ private fun CustomersTable(
                             .heightIn(max = 64.dp)
                             .onGloballyPositioned { coordinates ->
                                 if (coordinates.size.height.dp > maxHeight.value) {
-                                    println(coordinates.size.height.dp)
+                                    (coordinates.size.height.dp)
                                     maxHeight.value = coordinates.size.height.dp
                                 }
                             },
@@ -197,7 +224,7 @@ private fun CustomersTable(
                             .heightIn(max = 64.dp)
                             .onGloballyPositioned { coordinates ->
                                 if (coordinates.size.height.dp > maxHeight.value) {
-                                    println(coordinates.size.height.dp)
+                                    (coordinates.size.height.dp)
                                     maxHeight.value = coordinates.size.height.dp
                                 }
                             },
@@ -208,13 +235,13 @@ private fun CustomersTable(
                         Text(
                             modifier = Modifier.padding(8.dp),
                             text = when (key) {
-                                "firstName" -> row.firstName
-                                "lastName" -> row.lastName
-                                "email" -> row.email
-                                "phoneNumber" -> row.phoneNumber
-                                "driverLicense" -> row.driverLicense
-                                "isBanned" -> if (row.isBanned) "ДА" else "Нет"
-                                "createAt" -> row.createAt.toString()
+                                "firstName" -> row.firstName!!
+                                "lastName" -> row.lastName!!
+                                "email" -> row.email!!
+                                "phoneNumber" -> row.phoneNumber!!
+                                "driverLicense" -> row.driverLicense!!
+                                "isBanned" -> if (row.isBanned!!) "ДА" else "Нет"
+                                "createAt" -> row.createAt!!.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru")))
                                 else -> ""
                             },
                             style = TextStyle(

@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.ArrowBack
 import androidx.compose.material.icons.sharp.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -234,6 +235,18 @@ fun customerCardScreen(component: CustomerCardScreenComponent)
             }
 
 
+        }
+        IconButton(
+            onClick = {
+                component.goBack()
+            }
+        )
+        {
+            Icon(
+                imageVector = Icons.AutoMirrored.Sharp.ArrowBack,
+                contentDescription = "Back to",
+                tint = Color.White
+            )
         }
     }
 

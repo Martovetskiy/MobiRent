@@ -1,4 +1,4 @@
-package api.customer
+package api.car
 
 import api.GeneralResponse.FailResponse
 import api.HOST
@@ -9,33 +9,35 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getAllCustomer(
-    customerId: String? = null,
-    firstName: String? = null,
-    lastName: String? = null,
-    email: String? = null,
-    phoneNumber: String? = null,
-    driverLicense: String? = null,
-    isBanned: Boolean? = null,
+suspend fun getAllCar(
+    carId: String? = null,
+    make: String? = null,
+    model: String? = null,
+    year: String? = null,
+    colorHex: String? = null,
+    pricePerDay: String? = null,
+    numberPlate: String? = null,
+    status: String? = null,
     createAt: String? = null,
-    sortBy: String = "firstName",
+    sortBy: String = "make",
     sortDirection: String = "ASC"  // "asc" or "desc"
-): List<CustomerResponse> {
+): List<CarResponse> {
     val response: HttpResponse = client.request {
         url {
             method = HttpMethod.Get
             host = HOST // Замените на ваш хост
             port = PORT // Убедитесь, что порту соответствует вашему серверу
-            path("/api/Customers/GetCustomers") // Укажите только путь к API
+            path("/api/Cars/GetCars") // Укажите только путь к API
 
             // Добавьте параметры запроса
-            if (customerId != null) parameters["customerId"] = customerId
-            if (firstName != null) parameters["firstName"] = firstName
-            if (lastName != null) parameters["lastName"] = lastName
-            if (email != null) parameters["email"] = email
-            if (phoneNumber != null) parameters["phoneNumber"] = phoneNumber
-            if (driverLicense != null) parameters["driverLicense"] = driverLicense
-            if (isBanned != null) parameters["isBanned"] = isBanned.toString()
+            if (carId != null) parameters["carId"] = carId
+            if (make != null) parameters["make"] = make
+            if (model != null) parameters["model"] = model
+            if (year!= null) parameters["year"] = year
+            if (colorHex!= null) parameters["colorHex"] = colorHex
+            if (pricePerDay!= null) parameters["pricePerDay"] = pricePerDay
+            if (numberPlate!= null) parameters["numberPlate"] = numberPlate
+            if (status!= null) parameters["status"] = status
             if (createAt != null) parameters["createAt"] = createAt
             parameters["sortBy"] = sortBy
             parameters["sortDirection"] = sortDirection
@@ -44,7 +46,7 @@ suspend fun getAllCustomer(
     }
     if (response.status.value == 200)
     {
-        val result: List<CustomerResponse> = response.body()
+        val result: List<CarResponse> = response.body()
         return result
     }
     else
@@ -56,22 +58,22 @@ suspend fun getAllCustomer(
     }
 }
 
-suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
+suspend fun postCar(car: CarRequest): CarResponse {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Post
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/InsertCustomer")
+            path("api/Cars/InsertCar")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(customerRequest)
+        setBody(car)
     }
 
     if (response.status.value in 200..299) {
-        val result: CustomerResponse = response.body()
+        val result: CarResponse = response.body()
         return result
     }
     else {
@@ -80,22 +82,22 @@ suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
     }
 }
 
-suspend fun putCustomer(customer: CustomerResponse): CustomerResponse{
+suspend fun putCar(car: CarResponse): CarResponse{
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Put
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/UpdateCustomer/${customer.customerId}")
+            path("api/Cars/UpdateCar/${car.carId}")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(customer)
+        setBody(car)
     }
 
     if (response.status.value in 200..299) {
-        val result: CustomerResponse = response.body()
+        val result: CarResponse = response.body()
         return result
     }
     else {
@@ -104,26 +106,26 @@ suspend fun putCustomer(customer: CustomerResponse): CustomerResponse{
     }
 }
 
-suspend fun deleteCustomer(id: Long): CustomerResponse? {
+suspend fun deleteCar(id: Long): CarResponse? {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Delete
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Customers/DeleteCustomer/${id}")
+            path("api/Cars/DeleteCar/${id}")
 
         }
         contentType(ContentType.Application.Json)
     }
-    (response.status.value)
+
     if (response.status.value in 200..299) {
         if (response.status.value == 200){
             val result = null
             return result
         }
         else{
-            val result: CustomerResponse = response.body()
+            val result: CarResponse = response.body()
             return result
         }
     }
