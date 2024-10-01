@@ -33,6 +33,8 @@ import screens.customer.customerAddScreen
 import screens.customer.customerCardScreen
 import screens.customer.customersViewScreen
 import screens.homeScreen
+import screens.payment.paymentAddScreen
+import screens.payment.paymentCardScreen
 import screens.payment.paymentsViewScreen
 import screens.rental.rentalAddScreen
 import screens.rental.rentalCardScreen
@@ -118,7 +120,7 @@ fun mainMenu(
                     }
                 )
 
-                CustomTab(
+                /*CustomTab(
                     modifier = Modifier.height(60.dp),
                     selected = childStack.active.configuration == DecomposeNav.Configuration.ReviewViewScreen,
                     icon = ShieldCheckSvgrepoCom,
@@ -127,7 +129,7 @@ fun mainMenu(
                         root.navigation.popTo(0)
                         root.navigation.pushNew(DecomposeNav.Configuration.ReviewViewScreen)
                     }
-                )
+                )*/
             }
             Row(
                 modifier = Modifier
@@ -231,6 +233,8 @@ fun App(root: DecomposeNav) {
 
             //Payment
             is DecomposeNav.Child.PaymentsViewScreen -> paymentsViewScreen(instance.component)
+            is DecomposeNav.Child.PaymentCardScreen -> paymentCardScreen(instance.component)
+            is DecomposeNav.Child.PaymentAddScreen -> paymentAddScreen(instance.component)
 
             //Customer
             is DecomposeNav.Child.ReviewViewScreen -> reviewsViewScreen(instance.component)

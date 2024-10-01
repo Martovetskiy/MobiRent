@@ -136,6 +136,17 @@ fun carsViewScreen(
                 tint = Color.White
             )
         }
+
+        if (component.listCars.value.isEmpty()) {
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Center),
+                text = "Нет данных",
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                style = TextStyle(fontSize = 24.sp)
+            )
+        }
+
         BottomSheet(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isBottomSheetVisible,
@@ -162,6 +173,8 @@ fun carsViewScreen(
                 )
             }
         )
+
+
 
         PopupNotification(
             showPopup = component.showPopup,

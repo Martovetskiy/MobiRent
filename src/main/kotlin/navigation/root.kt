@@ -2,7 +2,6 @@ package navigation
 
 import api.car.CarResponse
 import api.customer.CustomerResponse
-import api.rental.RentalResponse
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -13,6 +12,8 @@ import components.car.CarsViewScreenComponent
 import components.customer.CustomerAddScreenComponent
 import components.customer.CustomerCardScreenComponent
 import components.customer.CustomersViewScreenComponent
+import components.payment.PaymentAddScreenComponent
+import components.payment.PaymentCardScreenComponent
 import components.payment.PaymentsViewScreenComponent
 import components.rental.RentalAddScreenComponent
 import components.rental.RentalCardScreenComponent
@@ -104,7 +105,7 @@ class DecomposeNav(
                 component = RentalCardScreenComponent(
                     componentContext = context,
                     navigation,
-                    rentalF = config.rentalF
+                    id = config.id
                 )
             )
 
@@ -120,6 +121,21 @@ class DecomposeNav(
                 component = PaymentsViewScreenComponent(
                     componentContext = context,
                     navigation
+                )
+            )
+
+            is Configuration.PaymentCardScreen -> Child.PaymentCardScreen(
+                component = PaymentCardScreenComponent(
+                    componentContext = context,
+                    navigation,
+                    id = config.id
+                )
+            )
+
+            is Configuration.PaymentAddScreen -> Child.PaymentAddScreen(
+                component = PaymentAddScreenComponent(
+                    componentContext = context,
+                    navigation,
                 )
             )
 
@@ -151,7 +167,8 @@ class DecomposeNav(
         data class RentalAddScreen(val component: RentalAddScreenComponent) : Child()
         //Payment
         data class PaymentsViewScreen(val component: PaymentsViewScreenComponent) : Child()
-
+        data class PaymentCardScreen(val component: PaymentCardScreenComponent) : Child()
+        data class PaymentAddScreen(val component: PaymentAddScreenComponent) : Child()
         //Review
         data class ReviewViewScreen(val component: ReviewsViewScreenComponent) : Child()
     }
@@ -182,13 +199,19 @@ class DecomposeNav(
         data object RentalsViewScreen : Configuration()
 
         data class RentalCardScreen(
-            val rentalF: RentalResponse?
+            val id: Long
         ) : Configuration()
 
         data object RentalAddScreen : Configuration()
 
         //Payment
         data object PaymentsViewScreen : Configuration()
+
+        data class PaymentCardScreen(
+            val id: Long
+        ) : Configuration()
+
+        data object PaymentAddScreen : Configuration()
 
         //Review
         data object ReviewViewScreen : Configuration()

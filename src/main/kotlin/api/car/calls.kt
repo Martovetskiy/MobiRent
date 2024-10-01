@@ -58,6 +58,33 @@ suspend fun getAllCar(
     }
 }
 
+suspend fun getCarById(
+    carId: Long
+): CarResponse {
+    val response: HttpResponse = client.request {
+        url {
+            method = HttpMethod.Get
+            host = HOST // Замените на ваш хост
+            port = PORT // Убедитесь, что порту соответствует вашему серверу
+            path("/api/Cars/GetCar/${carId}") // Укажите только путь к API
+
+        }
+        contentType(ContentType.Application.Json)
+    }
+    if (response.status.value == 200)
+    {
+        val result: CarResponse = response.body()
+        return result
+    }
+    else
+    {
+        val errorMessage = FailResponse(
+            detail = response.body()
+        )
+        throw Exception(errorMessage.detail)
+    }
+}
+
 suspend fun postCar(car: CarRequest): CarResponse {
     val response: HttpResponse = client.request{
         url {

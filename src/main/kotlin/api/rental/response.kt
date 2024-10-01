@@ -1,7 +1,5 @@
 package api.rental
 
-import api.car.CarResponse
-import api.customer.CustomerResponse
 import api.serial.OffsetDateTimeSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,18 +11,39 @@ data class RentalResponse (
     val rentalId: Long,
     @SerialName("customerId")
     val customerId: Long,
-    @SerialName("customer")
-    val customer: CustomerResponse? = null,
     @SerialName("carId")
     val carId: Long,
-    @SerialName("car")
-    val car: CarResponse? = null,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val startDate: OffsetDateTime?,
+    val startDate: OffsetDateTime,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val endDate: OffsetDateTime?,
+    val endDate: OffsetDateTime,
     @SerialName("totalPrice")
     val totalPrice: Double?,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val createAt: OffsetDateTime?
+    val createAt: OffsetDateTime
+)
+
+@Serializable
+data class RentalResponseViewDto (
+    @SerialName("rentalId")
+    val rentalId: Long,
+    @SerialName("customerId")
+    val customerId: Long,
+    @SerialName("carId")
+    val carId: Long,
+    @SerialName("email")
+    val email: String,
+    @SerialName("make")
+    val make: String,
+    @SerialName("model")
+    val model: String,
+
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val startDate: OffsetDateTime,
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val endDate: OffsetDateTime,
+    @SerialName("totalPrice")
+    val totalPrice: Double?,
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val createAt: OffsetDateTime
 )

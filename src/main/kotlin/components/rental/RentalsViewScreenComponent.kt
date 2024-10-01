@@ -2,7 +2,7 @@ package components.rental
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import api.rental.RentalResponse
+import api.rental.RentalResponseViewDto
 import api.rental.getAllRental
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -18,7 +18,7 @@ class RentalsViewScreenComponent  (
     private val _navigation: StackNavigation<Configuration>
 ) : ComponentContext by componentContext
 {
-    private val _listRentals: MutableState<List<RentalResponse>> = mutableStateOf(listOf())
+    private val _listRentals: MutableState<List<RentalResponseViewDto>> = mutableStateOf(listOf())
     private val _email: MutableState<String?> = mutableStateOf(null)
     private val _make: MutableState<String?> = mutableStateOf(null)
     private val _model: MutableState<String?> = mutableStateOf(null)
@@ -50,10 +50,10 @@ class RentalsViewScreenComponent  (
 
     }
 
-    fun goToCard(rental: RentalResponse)
+    fun goToCard(rental: RentalResponseViewDto)
     {
         _navigation.popTo(0)
-        _navigation.pushNew(Configuration.RentalCardScreen(rental))
+        _navigation.pushNew(Configuration.RentalCardScreen(rental.rentalId))
     }
 
     fun goToAdd()

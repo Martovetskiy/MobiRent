@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import api.rental.RentalResponse
+import api.rental.RentalResponseViewDto
 import components.rental.RentalsViewScreenComponent
 import icons.FilterSvgrepoCom
 import widgets.BottomSheet
@@ -102,7 +102,7 @@ fun rentalsViewScreen(component: RentalsViewScreenComponent)
                     }
                 }
             }
-            CustomersTable(
+            RentalsTable(
                 component.listRentals.value,
                 associativeMapRu,
                 fMap,
@@ -130,6 +130,17 @@ fun rentalsViewScreen(component: RentalsViewScreenComponent)
                 tint = Color.White
             )
         }
+
+        if (component.listRentals.value.isEmpty()) {
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Center),
+                text = "Нет данных",
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                style = TextStyle(fontSize = 24.sp)
+            )
+        }
+
         BottomSheet(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isBottomSheetVisible,
@@ -156,6 +167,8 @@ fun rentalsViewScreen(component: RentalsViewScreenComponent)
             }
         )
 
+
+
         PopupNotification(
             showPopup = component.showPopup,
             text = component.textPopup.value
@@ -165,11 +178,11 @@ fun rentalsViewScreen(component: RentalsViewScreenComponent)
 }
 
 @Composable
-private fun CustomersTable(
-    customers: List<RentalResponse>,
+private fun RentalsTable(
+    rentals: List<RentalResponseViewDto>,
     associativeMapRu: Map<String, String>,
     fMap: Map<String, Float>,
-    onClick: (RentalResponse) -> Unit = {}
+    onClick: (RentalResponseViewDto) -> Unit = {}
 )
 {
     val maxHeight = mutableStateOf(56.dp)
@@ -208,7 +221,7 @@ private fun CustomersTable(
                 }
             }
         }
-        items(customers)
+        items(rentals)
         {row ->
             Row (
                 modifier = Modifier.clickable {
@@ -235,13 +248,15 @@ private fun CustomersTable(
                         Text(
                             modifier = Modifier.padding(8.dp),
                             text = when (key) {
-                                "email" -> row.customer?.email ?: "Unknown"
-                                "make" -> row.car?.make ?: "Unknown"
-                                "model" -> row.car?.model ?: "Unknown"
-                                "startDate" -> row.startDate?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru"))) ?: "Unknown"
-                                "endDate" -> row.endDate?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru"))) ?: "Unknown"
-                                "totalPrice" -> (row.totalPrice ?: "Unknown").toString()
-                                "createAt" -> row.createAt!!.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru")))
+                                "email" -> row.email
+                                "make" -> row.make
+                                "model" -> row.model
+                                "startDate" -> row.startDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru")))
+                                    ?: "Unknown"
+                                "endDate" -> row.endDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru")))
+                                    ?: "Unknown"
+                                "totalPrice" -> row.totalPrice.toString()
+                                "createAt" -> row.createAt.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("ru")))
                                 else -> ""
                             },
                             style = TextStyle(

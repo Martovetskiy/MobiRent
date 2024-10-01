@@ -1,4 +1,4 @@
-package api.rental
+package api.payment
 
 import api.GeneralResponse.FailResponse
 import api.HOST
@@ -9,33 +9,32 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getAllRental(
+suspend fun getAllPayment(
     rentalId: String? = null,
     email: String? = null,
-    make: String? = null,
-    model: String? = null,
-    startDate: String? = null,
-    endDate: String? = null,
-    totalPrice: String? = null,
+    amount: String? = null,
+    step: String? = null,
+    paymentDate: String? = null,
+    paymentMethod: String? = null,
+
     createAt: String? = null,
-    sortBy: String = "rentalId",
+    sortBy: String = "Payments.paymentId",
     sortDirection: String = "ASC"  // "asc" or "desc"
-): List<RentalResponseViewDto> {
+): List<PaymentResponseViewDto> {
     val response: HttpResponse = client.request {
         url {
             method = HttpMethod.Get
             host = HOST // Замените на ваш хост
             port = PORT // Убедитесь, что порту соответствует вашему серверу
-            path("/api/Rentals/GetRentalsForTable") // Укажите только путь к API
+            path("/api/Payments/GetPaymentsForTable") // Укажите только путь к API
 
             // Добавьте параметры запроса
             if (rentalId != null) parameters["rentalId"] = rentalId
             if(email != null) parameters["email"] = email
-            if(make != null) parameters["make"] = make
-            if(model != null) parameters["model"] = model
-            if(startDate != null) parameters["startDate"] = startDate
-            if(endDate != null) parameters["endDate"] = endDate
-            if(totalPrice != null) parameters["totalPrice"] = totalPrice
+            if(amount != null) parameters["amount"] = amount
+            if(step != null) parameters["step"] = step
+            if(paymentDate != null) parameters["paymentDate"] = paymentDate
+            if(paymentMethod != null) parameters["paymentMethod"] = paymentMethod
 
             if (createAt != null) parameters["createAt"] = createAt
             parameters["sortBy"] = sortBy
@@ -45,7 +44,7 @@ suspend fun getAllRental(
     }
     if (response.status.value == 200)
     {
-        val result: List<RentalResponseViewDto> = response.body()
+        val result: List<PaymentResponseViewDto> = response.body()
         return result
     }
     else
@@ -57,22 +56,22 @@ suspend fun getAllRental(
     }
 }
 
-suspend fun getRentalById(
-    rentalId: Long
-): RentalResponse {
+suspend fun getPaymentById(
+    paymentId: Long
+): PaymentResponse {
     val response: HttpResponse = client.request {
         url {
             method = HttpMethod.Get
             host = HOST // Замените на ваш хост
             port = PORT // Убедитесь, что порту соответствует вашему серверу
-            path("/api/Rentals/GetRental/${rentalId}") // Укажите только путь к API
+            path("/api/Payments/GetPayment/${paymentId}") // Укажите только путь к API
 
         }
         contentType(ContentType.Application.Json)
     }
     if (response.status.value == 200)
     {
-        val result: RentalResponse = response.body()
+        val result: PaymentResponse = response.body()
         return result
     }
     else
@@ -84,22 +83,22 @@ suspend fun getRentalById(
     }
 }
 
-suspend fun postRental(rental: RentalRequest): RentalResponse {
+suspend fun postPayment(payment: PaymentRequest): PaymentResponse {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Post
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Rentals/InsertRental")
+            path("api/Payments/InsertPayment")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(rental)
+        setBody(payment)
     }
 
     if (response.status.value in 200..299) {
-        val result: RentalResponse = response.body()
+        val result: PaymentResponse = response.body()
         return result
     }
     else {
@@ -108,22 +107,22 @@ suspend fun postRental(rental: RentalRequest): RentalResponse {
     }
 }
 
-suspend fun putRental(id: Long, rental: RentalRequest): RentalResponse{
+suspend fun putPayment(id: Long, payment: PaymentRequest): PaymentResponse{
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Put
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Rentals/UpdateRental/${id}")
+            path("api/Payments/UpdatePayment/${id}")
 
         }
         contentType(ContentType.Application.Json)
-        setBody(rental)
+        setBody(payment)
     }
 
     if (response.status.value in 200..299) {
-        val result: RentalResponse = response.body()
+        val result: PaymentResponse = response.body()
         return result
     }
     else {
@@ -132,14 +131,14 @@ suspend fun putRental(id: Long, rental: RentalRequest): RentalResponse{
     }
 }
 
-suspend fun deleteRental(id: Long) {
+suspend fun deletePayment(id: Long) {
     val response: HttpResponse = client.request{
         url {
             method = HttpMethod.Delete
             protocol = URLProtocol.HTTP
             host = HOST
             port = PORT
-            path("api/Rentals/DeleteRental/${id}")
+            path("api/Payments/DeletePayment/${id}")
 
         }
         contentType(ContentType.Application.Json)

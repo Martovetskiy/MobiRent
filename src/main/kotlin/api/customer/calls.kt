@@ -56,6 +56,33 @@ suspend fun getAllCustomer(
     }
 }
 
+suspend fun getCustomerById(
+    customerId: Long
+): CustomerResponse {
+    val response: HttpResponse = client.request {
+        url {
+            method = HttpMethod.Get
+            host = HOST // Замените на ваш хост
+            port = PORT // Убедитесь, что порту соответствует вашему серверу
+            path("/api/Customers/GetCustomer/${customerId}") // Укажите только путь к API
+
+        }
+        contentType(ContentType.Application.Json)
+    }
+    if (response.status.value == 200)
+    {
+        val result: CustomerResponse= response.body()
+        return result
+    }
+    else
+    {
+        val errorMessage = FailResponse(
+            detail = response.body()
+        )
+        throw Exception(errorMessage.detail)
+    }
+}
+
 suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
     val response: HttpResponse = client.request{
         url {

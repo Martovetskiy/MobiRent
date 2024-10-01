@@ -1,14 +1,18 @@
-package screens.rental
+package screens.payment
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,31 +21,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import api.rental.RentalRequest
-import components.rental.RentalCardScreenComponent
-import icons.MoneyBankCheckPaymentChequeFinanceBusinessSvgrepoCom
+import api.payment.PaymentRequest
+import components.payment.PaymentCardScreenComponent
+import icons.DollarSvgrepoCom
 import isValidDate
 import widgets.PopupNotification
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun rentalCardScreen(component: RentalCardScreenComponent)
+fun paymentCardScreen(component: PaymentCardScreenComponent)
 {
-    val customerP = component.customerP
-    val carP = component.carP
-
-    var expandedCustomers by remember { mutableStateOf(false) }
-    var expandedCars by remember { mutableStateOf(false) }
 
     val associativeMapRu = mapOf(
         "email" to "Электронная почта пользователя",
-        "make" to "Марка",
-        "model" to "Модель",
-        "startDate" to "Начало аренды",
-        "endDate" to "Конец аренды",
-        "totalPrice" to "Цена",
+        "amount" to "Сумма",
+        "step" to "Шаг",
+        "paymentDate" to "Дата платежа",
+        "paymentMethod" to "Тип оплаты",
         "createAt" to "Дата создания карточки"
+    )
+
+    val methodsMap = mapOf(
+        "card" to "Карта",
+        "cash" to "Наличные",
+        "gift_card" to "Подарочная карта"
     )
     val isEdit = remember { mutableStateOf(false) }
 
@@ -55,7 +59,7 @@ fun rentalCardScreen(component: RentalCardScreenComponent)
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Карточка аренды ${component.rental.value?.rentalId ?: "Email"}",
+                text = "Карточка платежа для аренды ${component.payment.value?.rentalId ?: "Rental"}",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
@@ -72,7 +76,7 @@ fun rentalCardScreen(component: RentalCardScreenComponent)
                 )
             {
                 Icon(
-                    imageVector = MoneyBankCheckPaymentChequeFinanceBusinessSvgrepoCom,
+                    imageVector = DollarSvgrepoCom,
                     contentDescription = "Rental Image",
                     tint = Color.Black,
                     modifier = Modifier.size(150.dp)
@@ -99,79 +103,7 @@ fun rentalCardScreen(component: RentalCardScreenComponent)
             }
             Spacer(modifier = Modifier.height(24.dp))
 
-            Box(modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(0.3f)) { // Добавляем отступ для Divider
-                Box (modifier = Modifier.fillMaxWidth()
-                    .background(color = Color.LightGray, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
-                    .clickable {
-                        if (isEdit.value) expandedCustomers = true
-                    }.border(1.dp, Color.LightGray, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)),
-                    contentAlignment = Alignment.CenterStart) {
-                    androidx.compose.material.Text(
-                        text = "Юзер: ${if (customerP.value != null) customerP.value?.firstName + ' ' + customerP.value?.email else "Не выбран" }",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    DropdownMenu(
-
-                        expanded = expandedCustomers,
-                        onDismissRequest = { expandedCustomers = false }
-                    ) {
-                        component.customers.value.sortedBy { it.email }.forEach { cust ->
-                            DropdownMenuItem(onClick = {
-                                customerP.value = cust// Reset model when make changes
-                                expandedCustomers = false
-                            }) {
-                                Text(text = cust.email?: "Unknown")
-                            }
-                        }
-                    }
-                }
-
-                Divider(
-                    color = if (customerP.value != null) Color.Green else Color.Red,
-                    thickness = 1.dp, // Толщина границы
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter) // Выровнять по центру снизу
-                )
-            }
-
-            Box(modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(0.3f)) { // Добавляем отступ для Divider
-                Box (modifier = Modifier.fillMaxWidth()
-                    .background(color = Color.LightGray, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
-                    .clickable {
-                        if(isEdit.value) expandedCars = true
-                    }.border(1.dp, Color.LightGray, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)),
-                    contentAlignment = Alignment.CenterStart) {
-                    androidx.compose.material.Text(
-                        text = "Машина: ${if (carP.value != null) '#' + carP.value?.carId.toString() + ' ' + carP.value?.make + ' ' + carP.value?.model else "Не выбран" }",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                DropdownMenu(
-                    expanded = expandedCars,
-                    onDismissRequest = { expandedCars = false }
-                ) {
-                    (component.cars.value)
-                    component.cars.value.sortedBy { it.make }.forEach { car ->
-                        DropdownMenuItem(onClick = {
-                            carP.value = car
-                            expandedCars = false
-                        }) {
-                            Text(text = '#' + car.carId.toString() + ' ' + car.make.toString() + ' ' + car.model.toString() )
-                        }
-                    }
-                }
-
-                Divider(
-                    color = if (carP.value != null) Color.Green else Color.Red,
-                    thickness = 1.dp, // Толщина границы
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter) // Выровнять по центру снизу
-                )
-            }
-
-            associativeMapRu.keys.toList().slice(3..4).forEach { key ->
+            associativeMapRu.keys.toList().slice(1..2).forEach { key ->
                 TextField(
                     modifier = Modifier
                         .padding(bottom = 8.dp)
@@ -185,35 +117,69 @@ fun rentalCardScreen(component: RentalCardScreenComponent)
                     singleLine = true,
                     maxLines = 1,
                     isError = !when (key) {
-                        "startDate" -> isValidDate(component.startDate.value)
-                        "endDate" -> isValidDate(component.endDate.value)
+                        "amount" -> component.amount.value.toDoubleOrNull() != null
+                        "step" -> component.step.value.toIntOrNull() != null
+                        "paymentDate" -> isValidDate(component.paymentDate.value)
                         else -> false
                     },
                     value = when (key) {
-                        "startDate" -> component.startDate.value
-                        "endDate" -> component.endDate.value
+                        "amount" -> component.amount.value
+                        "step" -> component.step.value
+                        "paymentDate" -> component.paymentDate.value
                         else -> ""
 
                     },
                     onValueChange = {
                         when (key) {
-                            "startDate" -> component.startDate.value = it
-                            "endDate" -> component.endDate.value = it
+                            "amount" -> component.amount.value = it
+                            "step" -> component.step.value = it
+                            "paymentDate" -> component.paymentDate.value = it
                         }
 
                     },
                     label = {
                         Text(
-                            text = when (key) {
-                                "startDate" -> associativeMapRu[key] ?: ""
-                                "endDate" -> associativeMapRu[key] ?: ""
-                                else -> ""
-                            }
+                            text = associativeMapRu[key] ?: ""
                         )
                     },
-
                     )
 
+            }
+            Box (
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                    .background(
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(bottom = 8.dp),
+            ){
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                ) {
+                    androidx.compose.material.Text(
+                        modifier = Modifier.padding(8.dp),
+                        text = "Метод платежа:",
+                        fontWeight = FontWeight.Bold
+                    )
+                    methodsMap.keys.forEach { key ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(
+                                enabled = isEdit.value,
+                                selected = component.paymentMethod.value == key,
+                                onClick = {
+                                    component.paymentMethod.value = key
+                                }
+                            )
+                            Text(text = "${methodsMap[key]}")
+                        }
+                    }
+                }
             }
 
 
@@ -224,18 +190,19 @@ fun rentalCardScreen(component: RentalCardScreenComponent)
                             backgroundColor = MaterialTheme.colorScheme.primary
                         ),
                         enabled = (
-                                isValidDate(component.startDate.value) &&
-                                        isValidDate(component.endDate.value)
-                                ),
+                                component.amount.value.toDoubleOrNull() != null &&
+                                component.step.value.toIntOrNull() != null &&
+                                isValidDate(component.paymentDate.value)),
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             println()
-                            val res = RentalRequest(
-                                customerId = customerP.value!!.customerId,
-                                carId = carP.value!!.carId,
-                                startDate = OffsetDateTime.parse(component.startDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                                endDate = OffsetDateTime.parse(component.endDate.value+ "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                                createAt = component.rental.value!!.createAt
+                            val res = PaymentRequest(
+                                rentalId = component.payment.value!!.rentalId,
+                                amount = component.amount.value.toDouble(),
+                                step = component.step.value.toInt(),
+                                paymentDate = OffsetDateTime.parse(component.paymentDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                                paymentMethod = component.paymentMethod.value,
+                                createAt = component.payment.value!!.createAt
                             )
                             component.putData(res)
                         }

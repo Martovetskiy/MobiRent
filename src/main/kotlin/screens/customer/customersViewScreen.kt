@@ -64,7 +64,7 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "dbo.Cars",
+                    text = "dbo.Customers",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
@@ -131,6 +131,17 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
                 tint = Color.White
             )
         }
+
+        if (component.listCustomers.value.isEmpty()) {
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Center),
+                text = "Нет данных",
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                style = TextStyle(fontSize = 24.sp)
+            )
+        }
+
         BottomSheet(
             modifier = Modifier.align(Alignment.BottomCenter),
             isVisible = isBottomSheetVisible,
@@ -156,6 +167,8 @@ fun customersViewScreen(component: CustomersViewScreenComponent)
             )
             }
         )
+
+
 
         PopupNotification(
             showPopup = component.showPopup,

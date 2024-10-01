@@ -12,9 +12,9 @@ data class RentalRequest (
     @SerialName("carId")
     val carId: Long,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val startDate: OffsetDateTime?,
+    val startDate: OffsetDateTime,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val endDate: OffsetDateTime?,
+    val endDate: OffsetDateTime,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val createAt: OffsetDateTime?
+    val createAt: OffsetDateTime
 )
