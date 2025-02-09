@@ -8,6 +8,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import org.jetbrains.annotations.Async.Execute
 
 suspend fun getAllRental(
     rentalId: String? = null,
@@ -28,7 +29,6 @@ suspend fun getAllRental(
             port = PORT // Убедитесь, что порту соответствует вашему серверу
             path("/api/Rentals/GetRentalsForTable") // Укажите только путь к API
 
-            // Добавьте параметры запроса
             if (rentalId != null) parameters["rentalId"] = rentalId
             if(email != null) parameters["email"] = email
             if(make != null) parameters["make"] = make

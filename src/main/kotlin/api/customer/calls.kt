@@ -42,8 +42,11 @@ suspend fun getAllCustomer(
         }
         contentType(ContentType.Application.Json)
     }
+
+    println(response.status.value)
     if (response.status.value == 200)
     {
+
         val result: List<CustomerResponse> = response.body()
         return result
     }
@@ -96,7 +99,6 @@ suspend fun postCustomer(customerRequest: CustomerRequest): CustomerResponse {
         contentType(ContentType.Application.Json)
         setBody(customerRequest)
     }
-
     if (response.status.value in 200..299) {
         val result: CustomerResponse = response.body()
         return result

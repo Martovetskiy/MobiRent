@@ -18,6 +18,7 @@ data class PaymentRequest (
     val paymentDate: OffsetDateTime,
     @SerialName("paymentMethod")
     val paymentMethod: String,
+    @SerialName("createdAt")
     @Serializable(with = OffsetDateTimeSerializer::class)
     val createAt: OffsetDateTime
 )

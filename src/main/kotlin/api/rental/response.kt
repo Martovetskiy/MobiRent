@@ -31,12 +31,12 @@ data class RentalResponseViewDto (
     val customerId: Long,
     @SerialName("carId")
     val carId: Long,
-    @SerialName("email")
-    val email: String,
     @SerialName("make")
     val make: String,
     @SerialName("model")
     val model: String,
+    @SerialName("email")
+    val email: String,
 
     @Serializable(with = OffsetDateTimeSerializer::class)
     val startDate: OffsetDateTime,

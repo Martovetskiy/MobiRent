@@ -205,8 +205,8 @@ fun rentalAddScreen(component: RentalAddScreenComponent)
                     component.rental.value = RentalRequest(
                         customerId = customerP.value!!.customerId,
                         carId = carP.value!!.carId,
-                        startDate = OffsetDateTime.parse(startDate.value + "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                        endDate = OffsetDateTime.parse(endDate.value+ "T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                        startDate = OffsetDateTime.parse(startDate.value + "T07:00:00.000+00:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                        endDate = OffsetDateTime.parse(endDate.value+ "T07:00:00.000+00:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                         createAt = OffsetDateTime.now()
                     )
                     component.postData()

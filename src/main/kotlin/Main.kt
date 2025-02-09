@@ -55,7 +55,7 @@ fun mainMenu(
     var isConnected by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         while (true) {
-            isConnected = isServerConnected("http://localhost:5022/")
+            isConnected = isServerConnected("http://localhost:5000/")
             delay(2000) // Ждем 10 секунд перед следующей проверкой
         }
     }

@@ -49,7 +49,6 @@ class CarsViewScreenComponent (
 
     init {
         getData()
-
     }
 
     fun goToCard(car: CarResponse)

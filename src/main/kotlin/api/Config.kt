@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 const val HOST = "localhost"
-const val PORT = 5022
+const val PORT = 5000
 
 val client = HttpClient(CIO){
     install(ContentNegotiation)
@@ -28,8 +28,6 @@ suspend fun isServerConnected(url: String): Boolean {
         try {
             // Отправляем GET-запрос
             val response: HttpResponse = client.get(url)
-
-            // Проверяем успешный код ответа (2xx)
             response.status.value in 200..299
         } catch (e: Exception) {
             // Обработка ошибок (например, сетевые ошибки)

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 
 @Serializable
+@SerialName("createCustomerDTO")
 data class CustomerRequest (
     @SerialName("firstName")
     val firstName: String,
